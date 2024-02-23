@@ -174,13 +174,11 @@ export function renameQuestionById(
     targetId: number,
     newName: string
 ): Question[] {
-    const q_index = questions.findIndex(
-        (q: Question): boolean => q.id === targetId
+    const new_questions = questions.map(
+        (q: Question): Question =>
+            q.id === targetId ? { ...q, name: newName } : { ...q }
     );
-    const new_q = questions.find((q: Question): boolean => q.id === targetId);
-    const newList = [...questions];
-    newList.splice(q_index, 1, new_q);
-    return [];
+    return new_questions;
 }
 
 /***
@@ -195,7 +193,21 @@ export function changeQuestionTypeById(
     targetId: number,
     newQuestionType: QuestionType
 ): Question[] {
-    return [];
+    const new_questions = questions.map(
+        (q: Question): Question =>
+            q.id === targetId
+                ? {
+                      ...q,
+                      type: newQuestionType,
+                      options:
+                          q.type === "multiple_choice_question" &&
+                          newQuestionType === "short_answer_question"
+                              ? []
+                              : [...q.options]
+                  }
+                : { ...q }
+    );
+    return new_questions;
 }
 
 /**
@@ -214,7 +226,23 @@ export function editOption(
     targetOptionIndex: number,
     newOption: string
 ): Question[] {
-    return [];
+    const new_questions = questions.map(
+        (q: Question): Question =>
+            targetId === q.id
+                ? {
+                      ...q,
+                      options:
+                          targetOptionIndex === -1
+                              ? [...q.options, newOption]
+                              : [...q.options].splice(
+                                    targetOptionIndex,
+                                    1,
+                                    newOption
+                                )
+                  }
+                : { ...q }
+    );
+    return new_questions;
 }
 
 /***
