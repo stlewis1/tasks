@@ -1,5 +1,6 @@
 import { Answer } from "./interfaces/answer";
 import { Question, QuestionType } from "./interfaces/question";
+import { makeBlankQuestion } from "./objects";
 
 /**
  * Consumes an array of questions and returns a new array with only the questions
@@ -35,7 +36,14 @@ export function findQuestion(
     questions: Question[],
     id: number
 ): Question | null {
-    return null;
+    const find = questions.find(
+        (question: Question): boolean => question.id === id
+    );
+    if (find === undefined) {
+        return null;
+    } else {
+        return find;
+    }
 }
 
 /**
@@ -43,7 +51,10 @@ export function findQuestion(
  * with the given `id`.
  */
 export function removeQuestion(questions: Question[], id: number): Question[] {
-    return [];
+    const new_qs = questions.filter(
+        (question: Question): boolean => question.id !== id
+    );
+    return new_qs;
 }
 
 /***
@@ -51,21 +62,24 @@ export function removeQuestion(questions: Question[], id: number): Question[] {
  * questions, as an array.
  */
 export function getNames(questions: Question[]): string[] {
-    return [];
+    return questions.map((question: Question): string => question.name);
 }
 
 /***
  * Consumes an array of questions and returns the sum total of all their points added together.
  */
 export function sumPoints(questions: Question[]): number {
-    return 0;
+    return questions.reduce((sum: number, q: Question) => sum + q.points, 0);
 }
 
 /***
  * Consumes an array of questions and returns the sum total of the PUBLISHED questions.
  */
 export function sumPublishedPoints(questions: Question[]): number {
-    return 0;
+    return questions.reduce(
+        (sum: number, q: Question) => (sum += q.published ? q.points : 0),
+        0
+    );
 }
 
 /***
@@ -86,7 +100,14 @@ id,name,options,points,published
  * Check the unit tests for more examples!
  */
 export function toCSV(questions: Question[]): string {
-    return "";
+    const csv = questions
+        .map(
+            (q: Question): string =>
+                `${q.id},${q.name},${q.options.length},${q.points},${q.published}`
+        )
+        .join("\n");
+    const csv2 = "id,name,options,points,published\n" + csv;
+    return csv2;
 }
 
 /**
@@ -95,7 +116,14 @@ export function toCSV(questions: Question[]): string {
  * making the `text` an empty string, and using false for both `submitted` and `correct`.
  */
 export function makeAnswers(questions: Question[]): Answer[] {
-    return [];
+    return questions.map(
+        (q: Question): Answer => ({
+            questionId: q.id,
+            text: "",
+            submitted: false,
+            correct: false
+        })
+    );
 }
 
 /***
@@ -103,7 +131,9 @@ export function makeAnswers(questions: Question[]): Answer[] {
  * each question is now published, regardless of its previous published status.
  */
 export function publishAll(questions: Question[]): Question[] {
-    return [];
+    return questions.map(
+        (q: Question): Question => ({ ...q, published: true })
+    );
 }
 
 /***
@@ -111,7 +141,12 @@ export function publishAll(questions: Question[]): Question[] {
  * are the same type. They can be any type, as long as they are all the SAME type.
  */
 export function sameType(questions: Question[]): boolean {
-    return false;
+    const sum = questions.reduce(
+        (sum: number, q: Question) =>
+            (sum += q.type === "multiple_choice_question" ? 1 : 0),
+        0
+    );
+    return questions.length === sum || sum === 0;
 }
 
 /***
@@ -125,7 +160,8 @@ export function addNewQuestion(
     name: string,
     type: QuestionType
 ): Question[] {
-    return [];
+    const q = makeBlankQuestion(id, name, type);
+    return [...questions, q];
 }
 
 /***
@@ -138,6 +174,12 @@ export function renameQuestionById(
     targetId: number,
     newName: string
 ): Question[] {
+    const q_index = questions.findIndex(
+        (q: Question): boolean => q.id === targetId
+    );
+    const new_q = questions.find((q: Question): boolean => q.id === targetId);
+    const newList = [...questions];
+    newList.splice(q_index, 1, new_q);
     return [];
 }
 
