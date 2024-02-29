@@ -11,6 +11,7 @@ export function StartAttempt(): JSX.Element {
     }
     return (
         <div>
+            <div>Attempts: {attempts}</div>
             <Button onClick={startQuiz} disabled={progress || attempts === 0}>
                 Start Quiz
             </Button>
