@@ -193,20 +193,21 @@ export function changeQuestionTypeById(
     targetId: number,
     newQuestionType: QuestionType
 ): Question[] {
-    const new_questions = questions.map(
-        (q: Question): Question =>
-            q.id === targetId
-                ? {
-                      ...q,
-                      type: newQuestionType,
-                      options:
-                          q.type === "multiple_choice_question" &&
-                          newQuestionType === "short_answer_question"
-                              ? []
-                              : [...q.options]
-                  }
-                : { ...q }
-    );
+    const new_questions = questions.map((q: Question): Question => {
+        if (q.id === targetId) {
+            return {
+                ...q,
+                type: newQuestionType,
+                options:
+                    q.type === "multiple_choice_question" &&
+                    newQuestionType === "short_answer_question"
+                        ? []
+                        : [...q.options]
+            };
+        } else {
+            return { ...q };
+        }
+    });
     return new_questions;
 }
 
@@ -226,22 +227,22 @@ export function editOption(
     targetOptionIndex: number,
     newOption: string
 ): Question[] {
-    const new_questions = questions.map(
-        (q: Question): Question =>
-            targetId === q.id
-                ? {
-                      ...q,
-                      options:
-                          targetOptionIndex === -1
-                              ? [...q.options, newOption]
-                              : [...q.options].map((o: string): string =>
-                                    o === q.options[targetOptionIndex]
-                                        ? newOption
-                                        : o
-                                )
-                  }
-                : { ...q, options: q.options }
-    );
+    const new_questions = questions.map((q: Question): Question => {
+        if (targetId === q.id) {
+            if (targetOptionIndex === -1) {
+                return { ...q, options: [...q.options, newOption] };
+            } else {
+                return {
+                    ...q,
+                    options: [...q.options].map((o: string): string =>
+                        o === q.options[targetOptionIndex] ? newOption : o
+                    )
+                };
+            }
+        } else {
+            return { ...q, options: q.options };
+        }
+    });
     return new_questions;
 }
 
