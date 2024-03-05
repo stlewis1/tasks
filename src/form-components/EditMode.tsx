@@ -22,20 +22,9 @@ export function EditMode(): JSX.Element {
                 label="Edit Mode"
                 checked={eMode}
                 onChange={updateEditMode}
-                role="switch"
+                role="checkbox"
                 className="switch"
             />
-            <FormGroup controlId="formUName">
-                <FormLabel>UserName</FormLabel>
-                <FormControl
-                    type="string"
-                    value={uName}
-                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                        setuName(event.target.value)
-                    }
-                    disabled={!eMode}
-                />
-            </FormGroup>
             <FormCheck
                 type="checkbox"
                 id="is-a-student"
@@ -44,7 +33,25 @@ export function EditMode(): JSX.Element {
                 onChange={updateStudent}
                 disabled={!eMode}
                 role="checkbox"
+                hidden={!eMode}
             />
+            <div>
+                <FormGroup controlId="formUName">
+                    <FormLabel>User Name</FormLabel>
+                    <FormControl
+                        type="string"
+                        value={uName}
+                        onChange={(
+                            event: React.ChangeEvent<HTMLInputElement>
+                        ) => setuName(event.target.value)}
+                        disabled={!eMode}
+                        hidden={!eMode}
+                        role="textbox"
+                        className="textbox"
+                    />
+                </FormGroup>
+            </div>
+
             <div>
                 {uName} {student ? " is a student" : " is not a student"}
             </div>

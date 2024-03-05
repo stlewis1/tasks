@@ -3,8 +3,8 @@ import { Button, FormControl, FormGroup, FormLabel } from "react-bootstrap";
 
 export function GiveAttempts(): JSX.Element {
     const [attempts, setAttempts] = useState<number>(3);
-    const [request, setRequest] = useState<number>(0);
-    const requested = request || 0;
+    const [request, setRequest] = useState<string>("0");
+    const requested = parseInt(request) || 0;
     return (
         <div>
             <h3>Give Attempts</h3>
@@ -15,7 +15,7 @@ export function GiveAttempts(): JSX.Element {
                     type="number"
                     value={request}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                        setRequest(parseInt(event.target.value))
+                        setRequest(event.target.value)
                     }
                 />
             </FormGroup>
